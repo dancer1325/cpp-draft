@@ -14,6 +14,14 @@ C++ Standard Draft Sources
   * if you are | slow network,
     * get [BasicTeX package](http://tug.org/mactex/morepackages.html)
   * `sudo tlmgr install latexmk isodate substr relsize ulem fixme rsfs extract layouts enumitem l3packages l3kernel imakeidx splitindex xstring`
+    * Problems:
+      * Problem1: "sudo: tlmgr: command not found"
+        * Solution: Add TeX Live to PATH:
+          ```bash
+          export PATH="/usr/local/texlive/2023/bin/universal-darwin:$PATH"
+          # Add to ~/.zshrc or ~/.bash_profile for permanent fix
+          echo 'export PATH="/usr/local/texlive/2023/bin/universal-darwin:$PATH"' >> ~/.zshrc
+          ```
 
 ### Debian-based Systems
 
