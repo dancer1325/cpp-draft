@@ -22,3 +22,9 @@ tools/sections
 *.synctex.gz
 *.synctex*
 .check.stamp
+/.idea/.gitignore
+/.idea/aws.xml
+/.idea/cpp-draft.iml
+/.idea/editor.xml
+/.idea/modules.xml
+/.idea/vcs.xml

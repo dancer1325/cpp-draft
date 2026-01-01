@@ -124,74 +124,16 @@ The last preprocessing token in the sequence is the first preprocessing token wi
 
 > Note: A new-line character ends the preprocessing directive even if it occurs within what would otherwise be an invocation of a function-like macro.
 
-### Example
-
-```cpp
-#                       // preprocessing directive
-module ;                // preprocessing directive
-export module leftpad;  // preprocessing directive
-import <string>;        // preprocessing directive
-export import "squee";  // preprocessing directive
-import rightpad;        // preprocessing directive
-import :part;           // preprocessing directive
-
-module                  // not a preprocessing directive
-;                       // not a preprocessing directive
-
-export                  // not a preprocessing directive
-import                  // not a preprocessing directive
-foo;                    // not a preprocessing directive
-
-export                  // not a preprocessing directive
-import foo;             // preprocessing directive (ill-formed at phase 7)
-
-import ::               // not a preprocessing directive
-import ->               // not a preprocessing directive
-```
-
-A sequence of preprocessing tokens is only a *text-line* if it does not begin with a directive-introducing token.
-
-### Example
-
-```cpp
-using module = int;
-module i;               // not a text-line and not a control-line
-int foo() {
-  return i;
-}
-```
-
-The example is not a valid *preprocessing-file*.
-
-A sequence of preprocessing tokens is only a *conditionally-supported-directive* if it does not begin with any of the directive names appearing after a `#` in the syntax. A *conditionally-supported-directive* is conditionally-supported with implementation-defined semantics.
-
-If one of the *pp-tokens* of a `#embed` directive (before macro replacement) is the *identifier* `limit`, `prefix`, `suffix`, or `if_empty` and that *identifier* is defined as a macro, the program is ill-formed. Any *embed-prefixed-parameter* is conditionally-supported, with implementation-defined semantics.
-
-When in a group that is skipped, the directive syntax is relaxed to allow any sequence of preprocessing tokens to occur between the directive name and the following new-line character.
-
-The only whitespace characters that shall appear between preprocessing tokens within a preprocessing directive (from just after the directive-introducing token through just before the terminating new-line character) are space and horizontal-tab (including spaces that have replaced comments or possibly other whitespace characters in translation phase 3).
-
-The implementation can process and skip sections of source files conditionally, include other source files, import macros from header units, and replace macros. These capabilities are called *preprocessing*, because conceptually they occur before translation of the resulting translation unit.
-
-The preprocessing tokens within a preprocessing directive are not subject to macro expansion unless otherwise stated.
-
-### Example
-
-In:
-```cpp
-#define EMPTY
-EMPTY   #   include <file.h>
-```
-the sequence of preprocessing tokens on the second line is *not* a preprocessing directive, because it does not begin with a `#` at the start of translation phase 4, even though it will do so after the macro `EMPTY` has been replaced.
-
 ## Conditional inclusion
 
-**defined-macro-expression**:
-- `defined` identifier
-- `defined (` identifier `)`
+* **defined-macro-expression**:
+  - `defined identifierName`
+  - `defined(identifierName)`
 
-**h-preprocessing-token**:
-- *any preprocessing-token other than* `>`
+* **h-preprocessing-token**:
+  - ANY preprocessing-token
+    - ⚠️EXCEPT to: `>`⚠️
+      - Reason:🧠special meaning | include files🧠
 
 **h-pp-tokens**:
 - h-preprocessing-token *[h-pp-tokens]*
@@ -273,40 +215,6 @@ Preprocessing directives of the forms
 check whether the identifier is or is not currently defined as a macro name. Their conditions are equivalent to `#if defined` *identifier*, `#if !defined` *identifier*, `#elif defined` *identifier*, and `#elif !defined` *identifier*, respectively.
 
 Each directive's condition is checked in order. If it evaluates to false (zero), the group that it controls is skipped: directives are processed only through the name that determines the directive in order to keep track of the level of nested conditionals; the rest of the directives' preprocessing tokens are ignored, as are the other preprocessing tokens in the group. Only the first group whose control condition evaluates to true (nonzero) is processed; any following groups are skipped and their controlling directives are processed as if they were in a group that is skipped. If none of the conditions evaluates to true, and there is a `#else` directive, the group controlled by the `#else` is processed; lacking a `#else` directive, all the groups until the `#endif` are skipped.
-
-### Example
-
-This demonstrates a way to include a library `optional` facility only if it is available:
-
-```cpp
-#if __has_include(<optional>)
-#  include <optional>
-#  if __cpp_lib_optional >= 201603
-#    define have_optional 1
-#  endif
-#elif __has_include(<experimental/optional>)
-#  include <experimental/optional>
-#  if __cpp_lib_experimental_optional >= 201411
-#    define have_optional 1
-#    define experimental_optional 1
-#  endif
-#endif
-#ifndef have_optional
-#  define have_optional 0
-#endif
-```
-
-### Example
-
-This demonstrates a way to use the attribute `[[acme::deprecated]]` only if it is available.
-```cpp
-#if __has_cpp_attribute(acme::deprecated)
-#  define ATTR_DEPRECATED(msg) [[acme::deprecated(msg)]]
-#else
-#  define ATTR_DEPRECATED(msg) [[deprecated(msg)]]
-#endif
-ATTR_DEPRECATED("This function is deprecated") void anvil();
-```
 
 ## Source file inclusion
 
