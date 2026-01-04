@@ -52,11 +52,11 @@ Alternatively, you can `install WSL <https://learn.microsoft.com/en-us/windows/w
 and a Linux distribution,
 and follow the instructions for Linux above.
 
-## Instructions
+## 💡how to generate the output file?💡
 
 * | [source](source),
   * `make`
-    * generate a std.pdf
+    * generate a "std.pdf"
 
 ## Generated input files
 
@@ -82,3 +82,14 @@ you can also check the output for further problems with::
 
 GitHub Actions will also run these checks when you create a pull request,
 but it's often faster if you run them locally first.
+
+# how to study these ".tex" files | [source](source)?
+## converting -- to -- .md
+* ways
+  * attempt1: `pandoc containers.tex -o containers.md`
+  * attempt2: `pandoc source/containers.tex -o source/containers_improved.md --from=latex --to=markdown --wrap=none --preserve-tabs --markdown-headings=atx`
+  * attempt3: `pandoc source/containers_clean.tex -o source/containers_clean.md --from=latex --to=markdown --wrap=none`
+* Problems:
+  * Problem1: NOT pretty clear .md
+    * Temporary solution: study [cppreference.com](https://github.com/dancer1325/cppreference-doc)
+    * Solution: TODO:
